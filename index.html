@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>The Pete Tracker</title>
+		<script type="text/javascript" src="OpenLayers.js" ></script>
+		<script type="text/javascript" src="albumData.js" ></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js" ></script>
+		<script type="text/javascript" src="js/jquery.fancybox.pack.js" ></script>
+		<script type="text/javascript" src="PeteTracker.js" ></script>
+		<link rel="stylesheet" href="./theme/default/style.css" type="text/css">
+		<link href="jquery.fancybox.css" rel="stylesheet" />
+
+		<style>
+			body {
+				margin:0px;
+				padding:0px;
+			}
+			#sidebar {
+				position: absolute;
+				right: 15px;
+				width: 350px;
+				height: 500px;
+				top: 200px;
+				background-color: white;
+				z-index: 1000;
+				border-top-left-radius: 10px;
+				border-bottom-left-radius: 10px;
+				overflow: auto;
+				border-top: solid #CCCCCC 1px;
+				border-bottom: solid #CCCCCC 1px;
+				border-left: solid #CCCCCC 1px;
+			}
+			#sidebar h1 {
+				margin: 10px;
+				font-family: Arial;
+				font-size: 18px;
+			}
+			.photobox {
+				margin:5px 5px 5px 0px;
+				padding: 5px;
+				border-top: solid #CCCCCC 1px;
+				border-bottom: solid #CCCCCC 1px;
+				float:left;
+				font-family: 'Arial';
+				font-size: 11px;
+			}
+			.photo {
+				float:left;
+				display: block;
+				margin: 5px 0px 5px 5px;
+				border: solid #E1E1E1 1px;
+				clear: both;
+				cursor: pointer;	
+			}
+			#handle{
+				position: absolute;
+				right:0px;
+				top: 200px;
+				z-index: 1001;
+			}
+		</style>
+	</head>
+	<body onload="PeteTracker()">
+		<div id="map"></div>
+		<div id="sidebar"></div>
+		<img id="handle" src="img/in.png" />
+	</body>
+</html>
