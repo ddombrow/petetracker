@@ -47,39 +47,41 @@ function PeteTracker() {
 		var addPhotoFeatures = function() {
 			for(var i = 0; i < g_albumData.length; i++) {
 				var photo = g_albumData[i];
-				var lonlat = new OpenLayers.LonLat(photo.point.lon,photo.point.lat).transform(
-			        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-			        map.getProjectionObject() // to Spherical Mercator Projection
-			      );
-				//console.log(lonlat);
-				var peteMarker = new OpenLayers.Marker(lonlat,peteIcon.clone());
-				peteMarker.photoId = photo.id;
-				peteMarker.events.register('mousedown', peteMarker, 
-					function(evt) 
-					{ 
-						$('#' + this.photoId).click(); 
-						OpenLayers.Event.stop(evt); 
-					}
-				);
-				peteMarker.events.register('mouseover', peteMarker,
-					function(e) {
-						var getScrollTop = function(id) {
-							var st = $('#info_' + id).position().top;
-							//console.log(test);
-							return st;
+				if (photo.point.lon != 0 || photo.point.lat != 0) {
+					var lonlat = new OpenLayers.LonLat(photo.point.lon,photo.point.lat).transform(
+				        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+				        map.getProjectionObject() // to Spherical Mercator Projection
+				      );
+					//console.log(lonlat);
+					var peteMarker = new OpenLayers.Marker(lonlat,peteIcon.clone());
+					peteMarker.photoId = photo.id;
+					peteMarker.events.register('mousedown', peteMarker, 
+						function(evt) 
+						{ 
+							$('#' + this.photoId).click(); 
+							OpenLayers.Event.stop(evt); 
 						}
-						$('#' + this.photoId).css({border: 'solid #000000 1px'});
-						$('#sidebar').animate({scrollTop: getScrollTop(this.photoId) },'ease');
-						$('#info_' + this.photoId).css({'background-color': '#FFF000'});
-					}
-				);
-				peteMarker.events.register('mouseout', peteMarker,
-					function(e) {
-						$('#' + this.photoId).css({border: 'solid #CCCCCC 1px'});
-						$('#info_' + this.photoId).css({'background-color': ''});
-					}
-				);
-				markers.addMarker(peteMarker);
+					);
+					peteMarker.events.register('mouseover', peteMarker,
+						function(e) {
+							var getScrollTop = function(id) {
+								var st = $('#info_' + id).position().top;
+								//console.log(test);
+								return st;
+							}
+							$('#' + this.photoId).css({border: 'solid #000000 1px'});
+							$('#sidebar').animate({scrollTop: getScrollTop(this.photoId) },'ease');
+							$('#info_' + this.photoId).css({'background-color': '#FFF000'});
+						}
+					);
+					peteMarker.events.register('mouseout', peteMarker,
+						function(e) {
+							$('#' + this.photoId).css({border: 'solid #CCCCCC 1px'});
+							$('#info_' + this.photoId).css({'background-color': ''});
+						}
+					);
+					markers.addMarker(peteMarker);
+				}
 			}
 		};
 		
@@ -109,7 +111,13 @@ function PeteTracker() {
 				html.push("\"" + photo.caption + "\"<br/>");
 			}
 			html.push("File: " + photo.fileName + "<br/>");
-			html.push(" LatLon: " + photo.point.lat + ", " + photo.point.lon + "<br/>");
+
+			if (photo.point.lon != 0 || photo.point.lat != 0) {
+				html.push(" LatLon: " + photo.point.lat + ", " + photo.point.lon + "<br/>");
+			}
+			else {
+				html.push(" Location not available. <br/>");
+			}
 			html.push(formattedDate + "<br/>");
 			html.push(" <a href=" + photo.link + ">View in Picasa</a>")
 			html.push("</div>");

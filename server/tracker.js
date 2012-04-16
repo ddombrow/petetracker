@@ -26,7 +26,7 @@ function AlbumTracker(info) {
 		return urlBuilder.join('');
 	};
 
-	var getPicasaLink = function(photoid) {
+	var getPicasaLink = function(photoId) {
 		var urlBuilder = new Array();
 		urlBuilder.push("https://picasaweb.google.com");
 		urlBuilder.push("/");
@@ -34,7 +34,7 @@ function AlbumTracker(info) {
 		urlBuilder.push("/");
 		urlBuilder.push(albumInfo.albumName);
 		urlBuilder.push("#");
-		urlBuilder.push(photoid);
+		urlBuilder.push(photoId);
 		return urlBuilder.join('');
 	};
 
@@ -58,8 +58,12 @@ function AlbumTracker(info) {
 			for (var i = 0; i < photoArray.length; i++) {
 				var photo = photoArray[i];
 				
-				//console.dir(photo['media:group']['media:description']['#']);
-				var point = photo['georss:where']['gml:Point']['gml:pos'].split(' ');
+				console.dir(photo);
+				var point = [0,0];
+				if (photo['georss:where']) {
+					point = photo['georss:where']['gml:Point']['gml:pos'].split(' ');
+				}
+				
 				var src = photo.content['@'].src;
 				var caption  = photo['media:group']['media:description']['#'];
 
@@ -86,6 +90,10 @@ function AlbumTracker(info) {
 				//console.dir(photoObj);
 				photos.push(photoObj);
 			}
+
+			photos.sort(function(a,b) {
+				return b.timestamp - a.timestamp;
+			});
 			writeScriptFile();
 		};
 
