@@ -70,7 +70,7 @@ function PeteTracker() {
 								return st;
 							}
 							$('#' + this.photoId).css({border: 'solid #000000 1px'});
-							$('#sidebar').animate({scrollTop: getScrollTop(this.photoId) },'ease');
+							//$('#sidebar').animate({scrollTop: getScrollTop(this.photoId) },'ease');
 							$('#info_' + this.photoId).css({'background-color': '#FFF000'});
 						}
 					);
@@ -91,26 +91,52 @@ function PeteTracker() {
 	var createSideBar = function() {
 		$('#sidebar').append("<h1>The Pete Tracker</h1>");
 
+		var html = new Array();		
+		html.push("<table>");
+
 		for(var i = 0; i < g_albumData.length; i++) {
 			var photo = g_albumData[i];
-			var formattedDate = new Date(parseInt(photo.timestamp,10)).toString();
+			var photoDate = new Date(parseInt(photo.timestamp,10));
+			var formattedDate = "" + photoDate.getMonth() + "/" + photoDate.getDate() + "/" + photoDate.getFullYear();
+			var am = photoDate.getHours() < 12;
+			var hour;
+			var ampm;
+			if (am) {
+				if (photoDate.getHours() == 0) {
+					hour = 12;
+				}
+				else {
+					hour = photoDate.getHours(); 
+				}
+				ampm = "AM";
+			}
+			else {
+				hour = photoDate.getHours() - 12;
+				ampm = "PM";
+			}
+
+			var formattedTime = "" + hour + ":" + photoDate.getMinutes() + " " + ampm;
 			var title;
 			if (photo.caption) {
 				title = photo.caption;
 			}
 			else {
-				title = "Picture taken on " + formattedDate + ".";
+				title = "Picture taken on " + formattedDate + " " + formattedTime + ".";
 			}
 
-			var html = new Array();
+			
+			html.push("<tr>");
+			html.push("<td class='photocell'>");
 			html.push("<a class='fancybox' rel='group' href='" + photo.src + "' title='" + title + "'>")
 			html.push("<img class='photo' id='" + photo.id + "' src ='" + photo.thumb1src + "' />");
 			html.push("</a>");
+			html.push("</td>");
+			html.push("<td class='infocell'>");
 			html.push("<div id='info_" + photo.id + "' class='photobox'>");
 			if (photo.caption) {
-				html.push("\"" + photo.caption + "\"<br/>");
+				html.push("<strong>\"" + photo.caption + "\"</strong><br/>");
 			}
-			html.push("File: " + photo.fileName + "<br/>");
+			//html.push("File: " + photo.fileName + "<br/>");
 
 			if (photo.point.lon != 0 || photo.point.lat != 0) {
 				html.push(" LatLon: " + photo.point.lat + ", " + photo.point.lon + "<br/>");
@@ -118,13 +144,18 @@ function PeteTracker() {
 			else {
 				html.push(" Location not available. <br/>");
 			}
-			html.push(formattedDate + "<br/>");
+			html.push(formattedDate + " " + formattedTime + "<br/>");
 			html.push(" <a href=" + photo.link + ">View in Picasa</a>")
 			html.push("</div>");
+			html.push("</td>");
+			html.push("</tr>");
 
-
-			$('#sidebar').append(html.join(''));
+			
 		}
+
+		html.push("<table>");
+		$('#sidebar').append(html.join(''));
+
 		$('.photo').hover(
 			function(e) {
 				var target = e.target;
