@@ -1,3 +1,17 @@
+var cronJob = require('cron').CronJob;
+var bunyan = require('bunyan');
+var log = bunyan.createLogger(
+	{ 
+		name: "petetracker",
+		streams: [
+	    {
+	      level: "info",
+	      path: "petetracker.log"
+	    }
+	  ]
+	});
+
+
 var albumData = {
 	userId: 'peterhufford',
 	albumId: '5734644165704968193',
@@ -112,19 +126,33 @@ function AlbumTracker(info) {
 	};
 
 	var writeScriptFile = function() {
+		var formattedDate = new Date().toString('mmm dd, yyyy h:mm TT');
+
 		var fileBuilder = new Array();
 		fileBuilder.push("var g_albumData = ");
 		fileBuilder.push(JSON.stringify(photos));
 		fileBuilder.push(";");
+		fileBuilder.push("\n");
+		fileBuilder.push("var g_lastUpdate = ");
+		fileBuilder.push(JSON.stringify(formattedDate));
+		fileBuilder.push(";");
 		fs.writeFile('../albumData.js', fileBuilder.join(''), function(err) {
 				if (err) {
-					console.log(err);
+					//console.log(err);
+					log.error(err);
+				}
+				else {
+					log.info("Album js written successfully");
 				}
 			}
 		);
 	}
 }
 
-var albumTracker = new AlbumTracker(albumData);
-albumTracker.run();
+
+new cronJob('0 * * * * *', function() {
+    var albumTracker = new AlbumTracker(albumData);
+	albumTracker.run();
+}, null, true, "America/New_York");
+
 
