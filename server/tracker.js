@@ -150,7 +150,7 @@ function AlbumTracker(info) {
 }
 
 
-new cronJob('0 * * * * *', function() {
+new cronJob('0 0 * * * *', function() {
     var albumTracker = new AlbumTracker(albumData);
 	albumTracker.run();
 }, null, true, "America/New_York");
