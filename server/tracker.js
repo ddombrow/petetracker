@@ -1,7 +1,7 @@
 var albumData = {
-	userId: 'ddombrow',
-	albumId: '5731444509959728865',
-	albumName: 'AT'
+	userId: 'peterhufford',
+	albumId: '5734644165704968193',
+	albumName: 'PeteSATThruHike2012'
 };
 
 function AlbumTracker(info) {
@@ -53,12 +53,10 @@ function AlbumTracker(info) {
 		var xmlParser = new xml2js.Parser();
 
 		var afterParsing = function(err, result) {
-			//console.dir(result);
-			var photoArray = result.entry;
-			for (var i = 0; i < photoArray.length; i++) {
-				var photo = photoArray[i];
-				
-				console.dir(photo);
+			//console.dir(result.entry);
+
+			var getPhotoObj = function(photo) {
+				//console.dir(photo);
 				var point = [0,0];
 				if (photo['georss:where']) {
 					point = photo['georss:where']['gml:Point']['gml:pos'].split(' ');
@@ -87,8 +85,21 @@ function AlbumTracker(info) {
 				else {
 					photoObj.caption = "";
 				}
-				//console.dir(photoObj);
-				photos.push(photoObj);
+				
+				return photoObj;				
+			};
+
+			var photoArray = result.entry;
+			//console.dir(result.entry);
+			if (photoArray.length) {
+				for (var i = 0; i < photoArray.length; i++) {
+					var photoObj = getPhotoObj(photoArray[i]);
+					photos.push(photoObj);
+				}
+			}
+			else {
+				var p = getPhotoObj(result.entry);
+				photos.push(p);
 			}
 
 			photos.sort(function(a,b) {
@@ -105,7 +116,6 @@ function AlbumTracker(info) {
 		fileBuilder.push("var g_albumData = ");
 		fileBuilder.push(JSON.stringify(photos));
 		fileBuilder.push(";");
-
 		fs.writeFile('../albumData.js', fileBuilder.join(''), function(err) {
 				if (err) {
 					console.log(err);
