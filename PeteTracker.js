@@ -97,7 +97,7 @@ function PeteTracker() {
 		for(var i = 0; i < g_albumData.length; i++) {
 			var photo = g_albumData[i];
 			var photoDate = new Date(parseInt(photo.timestamp,10));
-			var formattedDate = "" + photoDate.getMonth() + "/" + photoDate.getDate() + "/" + photoDate.getFullYear();
+			var formattedDate = "" + photoDate.getMonth()+1 + "/" + photoDate.getDate() + "/" + photoDate.getFullYear();
 			var am = photoDate.getHours() < 12;
 			var hour;
 			var ampm;
